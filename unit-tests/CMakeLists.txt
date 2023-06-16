@@ -1,0 +1,7 @@
+enable_testing()
+find_package(GTest REQUIRED)
+
+add_executable(TestNamedArguments TestNamedArguments.cpp)
+target_link_libraries(TestNamedArguments PRIVATE NamedArguments GTest::gtest_main)
+target_compile_features(TestNamedArguments PRIVATE cxx_std_17)
+gtest_discover_tests(TestNamedArguments)
