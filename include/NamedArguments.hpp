@@ -9,6 +9,7 @@ struct NamedArgument
 {
 public:
     using TagType = Tag;
+    using ArgType = ArgumentType;
 
     template<typename U> 
     explicit constexpr NamedArgument(U&& arg)
@@ -33,7 +34,7 @@ struct UserArgument
     template<typename U>
     constexpr NamedArgument<ArgumentType, Tag> operator=(U&& arg) const 
     {
-        return {std::forward<U>(arg)};
+        return NamedArgument<ArgumentType, Tag>{std::forward<U>(arg)};
     }
 };
 
@@ -55,7 +56,8 @@ namespace Detail
     };
 
     template<bool SeenNamedArgument, typename Tp> 
-    struct is_well_formatted_impl<SeenNamedArgument, Tp> : std::true_type {};
+    struct is_well_formatted_impl<SeenNamedArgument, Tp> : std::bool_constant<(SeenNamedArgument) ? is_named_argument<Tp>::value 
+                                                                              : true> {};
 }
 /**
  * @brief Checks to see if an argument list containing positional and named arguments is well formatted
